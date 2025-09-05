@@ -67,6 +67,7 @@ button:focus-visible {
   }
 }
 
+
 @import "tailwindcss";
 
 /* CSS-first 테마 선언 (v4) */
@@ -87,3 +88,4 @@ button:focus-visible {
   --color-bg: white;
   --color-text: black;
 }
+
