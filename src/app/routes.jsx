@@ -3,6 +3,8 @@ import Layout from './Layout'
 
 import LoginPage from '../pages/login/LoginPage'
 
+import LoginDetailPage from '../pages/login/LoginDetailPage'
+
 // 리스트 페이지
 import HomeAsk from '../pages/home/HomeAsk'        // /ask
 import HomeOffer from '../pages/home/HomeOffer'    // /offer
@@ -25,6 +27,7 @@ const router = createBrowserRouter([
     path: '/',
     element: <Layout />,
     children: [
+
       // 첫 화면은 /offer 로
       { index: true, element: <Navigate to="/offer" replace /> },
 
@@ -47,6 +50,7 @@ const router = createBrowserRouter([
 
       // 잘못된 경로는 /offer로
       { path: '*', element: <Navigate to="/offer" replace /> },
+
     ],
   },
 ])
