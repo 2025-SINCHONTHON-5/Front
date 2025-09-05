@@ -42,7 +42,7 @@ const LoginPage = () => {
           <button
             type="button"
             onClick={goToLoginDetail}
-            className="w-full px-4 py-3 font-semibold !text-white !bg-black rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
+            className="w-full px-4 py-3 font-semibold !text-black !bg-white rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
           >
             로그인
           </button>
@@ -53,7 +53,7 @@ const LoginPage = () => {
           {/* 7. 회원가입 버튼 */}
           <button
             type="button"
-            className="w-full px-4 py-3 font-semibold text-gray-700 bg-gray-200 rounded-lg shadow-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75"
+            className="w-full px-4 py-3 font-semibold text-white bg-black border-white rounded-lg shadow-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75"
           >
             회원가입
           </button>
