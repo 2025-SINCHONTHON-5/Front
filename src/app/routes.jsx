@@ -44,6 +44,7 @@ const router = createBrowserRouter([
       { path: 'ask/posts/:id', element: <AskPostDetailPage /> },
 
       // 기타
+      { path: 'logindetail', element: <LoginDetailPage /> },
       { path: 'login', element: <LoginPage /> },
       { path: 'my', element: <MyPage /> },
       { path: 'notifications', element: <NotificationsPage /> },
