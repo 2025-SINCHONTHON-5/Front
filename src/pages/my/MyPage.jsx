@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { getUserProfile } from '../../apis/mypage';
 import { Link, useNavigate } from 'react-router-dom';
+
 
 // Chevron Right Icon Component
 const ChevronRightIcon = () => (
@@ -17,31 +19,53 @@ const ChevronRightIcon = () => (
 
 export default function MyPage() {
   const navigate = useNavigate();
-  
+
+  // API 데이터를 저장할 state와 로딩/에러 상태를 관리할 state를 추가합니다.
+  const [userData, setUserData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // 컴포넌트가 처음 렌더링될 때 사용자 정보를 불러옵니다.
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const data = await getUserProfile();
+        setUserData(data);
+      } catch (err) {
+        setError(err.message || '프로필 정보를 불러오는 데 실패했습니다.');
+        // 선택사항: 토큰 만료 등 에러 발생 시 로그인 페이지로 리디렉션
+        // navigate('/login');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, [navigate]); // navigate를 의존성 배열에 추가합니다.
+
   const goToReceived = () => {
     navigate('/my/receives');
   };
 
   const goToApplied = () => {
     navigate('/my/requests');
+  };
+
+  // 로딩 중일 때 보여줄 UI
+  if (isLoading) {
+    return <div className="flex items-center justify-center min-h-screen">로딩 중...</div>;
   }
 
-  // TODO: 추후 API 연동을 통해 실제 사용자 데이터와 요청 개수를 가져와야 합니다.
-  const userData = {
-    name: '홍길동',
-    email: 'gildong@example.com',
-  };
+  // 에러가 발생했을 때 보여줄 UI
+  if (error) {
+    return <div className="flex items-center justify-center min-h-screen text-red-500">에러: {error}</div>;
+  }
 
-  const requestCounts = {
-    received: 5, // 내가 받은 요청 개수
-    applied: 3,  // 내가 신청한 요청 개수
-  };
-
+  // 데이터 로딩이 성공적으로 완료되었을 때 보여줄 UI
   return (
-    <div className="min-h-screen p-6">
-      {/* ⭐ mx-auto를 추가하여 콘텐츠 블록을 중앙 정렬합니다. */}
+    <div className="min-h-screen p-6 bg-gray-50">
       <div className="w-full max-w-md mx-auto text-left">
-        {/* --- 사용자 정보 섹션 --- */}
+        {/* --- 사용자 정보 섹션 (API 데이터 사용) --- */}
         <section>
           <p className="mt-1 text-4xl font-bold">안녕하세요!</p>
           <p className="mt-1 text-4xl font-bold">{userData.name} 님</p>
@@ -57,11 +81,10 @@ export default function MyPage() {
         {/* --- 구분선 --- */}
         <div className="my-8 border-t border-gray-200" />
 
-        {/* --- '해드려요' 관리 섹션 --- */}
+        {/* --- '해드려요' 관리 섹션 (API 데이터 사용) --- */}
         <section>
           <h2 className="text-xl font-bold">해드려요</h2>
-
-          <div className="mt-4 space-y-4"> {/* 간격을 조금 더 줍니다 */}
+          <div className="mt-4 space-y-4">
             {/* 내가 받은 요청 관리하기 */}
             <div
               onClick={goToReceived}
@@ -69,7 +92,7 @@ export default function MyPage() {
             >
               <span className="font-semibold text-gray-500">내가 받은 요청 관리하기</span>
               <div className="flex items-center space-x-2">
-                <span className="font-bold text-gray-500">{requestCounts.received}개</span>
+                <span className="font-bold text-gray-500">{userData.receive_request_count}개</span>
                 <ChevronRightIcon />
               </div>
             </div>
@@ -81,7 +104,7 @@ export default function MyPage() {
             >
               <span className="font-semibold text-gray-500">내가 신청한 요청 현황보기</span>
               <div className="flex items-center space-x-2">
-                <span className="font-bold text-gray-500">{requestCounts.applied}개</span>
+                <span className="font-bold text-gray-500">{userData.join_request_count}개</span>
                 <ChevronRightIcon />
               </div>
             </div>
