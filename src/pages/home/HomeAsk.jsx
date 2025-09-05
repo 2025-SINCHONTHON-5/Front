@@ -1,5 +1,7 @@
 import React from 'react';
 import PostCard from '../../components/PostCard.jsx';
+import { Link } from 'react-router-dom';
+
 
 // --- Mock Data (해주세요 게시글용) ---
 const mockAsks = [
@@ -37,6 +39,12 @@ const mockAsks = [
 ];
 // --- End of Mock Data ---
 
+const PencilIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z" />
+    </svg>
+);
+
 
 // 메인 페이지 컴포넌트
 export default function HomeAsk() {
@@ -63,6 +71,15 @@ export default function HomeAsk() {
                     </div>
                 ))}
             </main>
+
+            <Link 
+            to="/ask/posts/new" // AskNewPostPage 경로
+            className="fixed bottom-20 left-6 bg-gray-100 text-black p-4 rounded-full shadow-lg flex items-center justify-center hover:bg-indigo-700 transition-transform transform hover:scale-110"
+            aria-label="해주세요 새 글 작성"
+        >
+            <PencilIcon />
+        </Link>
+
         </div>
     </div>
   );

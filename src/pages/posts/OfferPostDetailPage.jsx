@@ -1,198 +1,195 @@
 import { useParams } from 'react-router-dom'
 import React, { useState } from 'react'
 
+// --- Mock Data (실제로는 API를 통해 받아올 데이터) ---
 const mockPostData = {
   id: 1,
   author: '친절한 라이언',
-  title: '엽기떡볶이 공구해주실 분!',
+  title: '떡볶이 공동구매 하실 분!',
   content:
-    '엽떡 저 혼자 먹기는 좀 그런데 다른 분이 공구해주시면 같이 먹고 싶어요',
+    '학교 앞에서 파는 인생 떡볶이, 다들 아시죠? 혼자 먹기에는 양이 많아서 공동구매 하실 분들을 찾습니다. 매운맛, 보통맛 선택 가능하니 많은 참여 부탁드려요!',
   totalAmount: 12000,
-  maxPeople: 4,
-  deadline: '9월 7일 오후 8시',
-  executionTime: '9월 8일 오후 2시',
+  currentApplicants: 3,
+  maxApplicants: 5,
+  deadline: '2025-09-10T20:00:00',
+  executionTime: '25/09/11 오후 7시',
   location: '서강대학교 정문',
   accountHolder: '홍길동',
   accountNumber: '우리은행 1002-123-456789',
-  imageUrl: 'https://placehold.co/800x400/F3E8FF/4F46E5?text=떡볶이+이미지', // 예시 이미지
-  createdAt: '2025년 9월 5일',
+  imageUrl: 'https://placehold.co/800x400/F3E8FF/4F46E5?text=떡볶이+이미지',
+  createdAt: '25/09/05 11:30',
 }
 
 const mockComments = [
-  {
-    id: 1,
-    author: '어피치',
-    text: '저요! 저 참여하고 싶어요! 보통맛으로 부탁드려요.',
-    timestamp: '2시간 전',
-  },
-  {
-    id: 2,
-    author: '네오',
-    text: '혹시 튀김도 같이 주문 가능한가요?',
-    timestamp: '1시간 전',
-  },
+  { id: 1, author: '어피치', text: '저요! 저 참여하고 싶어요! 보통맛으로 부탁드려요.'},
+  { id: 2, author: '네오', text: '혹시 튀김도 같이 주문 가능한가요?'},
 ]
+// --- End of Mock Data ---
+
+// D-day 계산 함수
+const calculateDday = (deadline) => {
+    const today = new Date();
+    const targetDate = new Date(deadline);
+    const diffTime = targetDate - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays < 0) return '마감';
+    if (diffDays === 0) return 'D-Day';
+    return `D-${diffDays}`;
+};
+
+// 신청 확인 모달 컴포넌트
+const ApplicationModal = ({ post, onClose, onConfirm }) => {
+    const [requestMessage, setRequestMessage] = useState('');
+
+    const handleConfirm = () => {
+        // 실제 앱에서는 여기서 서버로 요청사항을 전송합니다.
+        console.log("요청사항:", requestMessage);
+        onConfirm();
+    }
+
+    return (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4 z-50">
+            <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6 space-y-4">
+                <h2 className="text-xl font-bold text-gray-800 text-center">신청하기 전 꼭 확인해주세요</h2>
+                
+                <div className="bg-white-100 p-4 rounded-md text-sm space-y-2 text-center">
+                    <p>{post.accountHolder}</p>
+                    <p>{post.accountNumber}</p>
+                    <p className="pt-2 text-gray-600">
+                        예금주명과 계좌번호를 저장해주시고,
+                        <br/>
+                        인원 모집 성공 알림이 발송되면 입금해주세요.
+                        <br/><br/>
+                        요청 사항은 아래에 작성해주세요.
+
+                    </p>
+                </div>
+
+                <div>
+                    <textarea
+                        id="request-message"
+                        rows="4"
+                        maxLength="300"
+                        value={requestMessage}
+                        onChange={(e) => setRequestMessage(e.target.value)}
+                        className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500"
+                        placeholder="요청사항을 입력해주세요."
+                    ></textarea>
+                    <p className="text-right text-xs text-gray-500 mt-1">{requestMessage.length}/300</p>
+                </div>
+
+                <div className="flex justify-center space-x-3 pt-2">
+                    <button onClick={onClose} className="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition">취소하기</button>
+                    <button onClick={handleConfirm} className="px-6 py-2 bg-black text-white font-semibold rounded-lg hover:bg-indigo-700 transition">신청하기</button>
+                </div>
+            </div>
+        </div>
+    )
+}
 
 export default function OfferPostDetailPage() {
   const { id } = useParams()
-
-  // 댓글 목록과 새 댓글 입력을 위한 상태 관리
   const [comments, setComments] = useState(mockComments)
-  const [newComment, setNewComment] = useState('')
+  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태
 
-  // 새 댓글 입력 핸들러
-  const handleCommentChange = (e) => {
-    setNewComment(e.target.value)
+  const handleApplyClick = () => {
+    setIsModalOpen(true); // 신청하기 버튼 클릭 시 모달 열기
   }
 
-  // 댓글 제출 핸들러
-  const handleCommentSubmit = (e) => {
-    e.preventDefault()
-    if (newComment.trim() === '') return // 빈 댓글은 등록하지 않음
-
-    const newCommentObject = {
-      id: Date.now(), // 간단한 고유 ID 생성
-      author: '현재 사용자', // 실제 앱에서는 로그인된 사용자 정보 사용
-      text: newComment,
-      timestamp: '방금 전',
-    }
-
-    setComments([...comments, newCommentObject]) // 기존 댓글 목록에 새 댓글 추가
-    setNewComment('') // 입력창 비우기
+  const handleConfirmApplication = () => {
+    setIsModalOpen(false); // 모달의 신청하기 버튼 클릭 시
+    alert('신청이 완료되었습니다.');
   }
-
-
-
-
+  
+  const progressPercentage = (mockPostData.currentApplicants / mockPostData.maxApplicants) * 100;
 
   return (
-    <div className="bg-white-100 min-h-screen font-sans py-12 px-4">
-      <div className="w-full max-w-3xl mx-auto bg-white rounded-2xl overflow-hidden">
-        {/* --- 게시글 본문 섹션 --- */}
-        <article className="p-6 sm:p-8">
-          {/* 이미지 */}
-          {mockPostData.imageUrl && (
-            <img
-              src={mockPostData.imageUrl}
-              alt="게시글 대표 이미지"
-              className="w-full h-64 object-cover rounded-lg mb-6"
-            />
-          )}
+    <>
+      <div className="bg-white min-h-screen font-sans py-12 px-4">
+        <div className="w-full max-w-3xl mx-auto bg-white overflow-hidden">
+          <article className="p-6 sm:p-8">
+            {mockPostData.imageUrl && (
+              <img
+                src={mockPostData.imageUrl}
+                alt="게시글 대표 이미지"
+                className="w-full h-64 object-cover rounded-lg mb-6"
+              />
+            )}
 
-          {/* 제목 */}
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {mockPostData.title}
-          </h1>
-
-          {/* 작성자 및 작성일 */}
-          <div className="text-sm text-gray-500 mb-6">
-            <span>작성자: {mockPostData.author}</span>
-            <span className="mx-2">·</span>
-            <span>{mockPostData.createdAt}</span>
-          </div>
-
-          {/* 상세 내용 (줄글) */}
-          <p className="text-gray-700 leading-relaxed whitespace-pre-wrap mb-8">
-            {mockPostData.content}
-          </p>
-
-          {/* 핵심 정보 요약 (구조화된 스타일) */}
-          <div className="bg-gray-50 rounded-lg p-6">
-            <h2 className="text-lg font-semibold mb-4 border-b pb-2 text-gray-800">
-              참여 안내
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
-              <div>
-                <p className="text-sm font-medium text-gray-500">모집 인원</p>
-                <p className="font-semibold text-gray-900">
-                  {mockPostData.maxPeople}명
-                </p>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-500">목표 금액</p>
-                <p className="font-semibold text-gray-900">
-                  {mockPostData.totalAmount.toLocaleString()}원
-                </p>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-500">신청 마감</p>
-                <p className="font-semibold text-gray-900">
-                  {mockPostData.deadline}
-                </p>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-500">활동 시간</p>
-                <p className="font-semibold text-gray-900">
-                  {mockPostData.executionTime}
-                </p>
-              </div>
-              <div className="sm:col-span-2">
-                <p className="text-sm font-medium text-gray-500">전달 장소</p>
-                <p className="font-semibold text-gray-900">
-                  {mockPostData.location}
-                </p>
-              </div>
-              <div className="sm:col-span-2">
-                <p className="text-sm font-medium text-gray-500">입금 계좌</p>
-                <p className="font-semibold text-gray-900">
-                  {mockPostData.accountHolder} ({mockPostData.accountNumber})
-                </p>
-              </div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              {mockPostData.title}
+            </h1>
+            <div className="text-sm text-gray-500">
+              <span>{mockPostData.author} | {mockPostData.createdAt}</span>
             </div>
-          </div>
-        </article>
 
-        <hr className="my-6" />
+            <hr className="my-6 border-gray-200" />
+            
+            <div>
+                <p className="text-sm font-semibold text-gray-900">희망 금액</p>
+                <p className="font-medium text-gray-900">총 {mockPostData.totalAmount.toLocaleString()}원</p>
+            </div>
 
-        {/* --- 댓글 섹션 --- */}
-        <section className="p-6 sm:p-8">
-          <h2 className="text-xl font-bold text-gray-800 mb-4">
-            댓글 {comments.length}개
-          </h2>
+            <hr className="my-6 border-gray-200" />
 
-          {/* 댓글 작성 폼 */}
-          <form onSubmit={handleCommentSubmit} className="mb-6">
-            <textarea
-              value={newComment}
-              onChange={handleCommentChange}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition mb-2"
-              rows="3"
-              placeholder="따뜻한 댓글을 남겨주세요."
-            />
-            <button
-              type="submit"
-              className="w-full sm:w-auto float-right bg-indigo-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-indigo-700 transition"
-            >
-              등록
-            </button>
-          </form>
-
-          {/* 댓글 목록 */}
-          <div className="space-y-6">
-            {comments.map((comment) => (
-              <div key={comment.id} className="flex space-x-3">
-                <div className="flex-shrink-0">
-                  <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center font-bold text-indigo-600">
-                    {comment.author.charAt(0)}
-                  </div>
+            <div className="mt-4">
+                <div className="flex justify-between items-center text-sm font-semibold">
+                    <span className="text-gray-500">마감 {calculateDday(mockPostData.deadline)}</span>
+                    <span className="text-gray-500">{mockPostData.currentApplicants}/{mockPostData.maxApplicants}명</span>
                 </div>
-                <div>
-                  <div className="bg-gray-100 rounded-lg p-3">
-                    <p className="font-semibold text-gray-800 text-sm">
-                      {comment.author}
-                    </p>
-                    <p className="text-gray-700">{comment.text}</p>
-                  </div>
-                  <p className="text-xs text-gray-500 mt-1 pl-1">
-                    {comment.timestamp}
-                  </p>
+                <div className="w-full bg-gray-200 rounded-full h-2.5 mt-1">
+                    <div className="bg-black h-2.5 rounded-full" style={{ width: `${progressPercentage}%` }}></div>
                 </div>
+            </div>
+
+            <p className="text-gray-700 leading-relaxed whitespace-pre-wrap min-h-[100px] mt-6">
+              {mockPostData.content}
+            </p>
+
+            <hr className="my-8 border-gray-200" />
+            
+            <div>
+                <p className="text-sm font-semibold text-gray-900">수행 일시</p>
+                <p className="font-medium text-gray-900">{mockPostData.executionTime}</p>
+            </div>
+            
+            <hr className="my-6 border-gray-200" />
+
+            <div>
+                <p className="text-sm font-semibold text-gray-900">픽업 및 전달 장소</p>
+                <p className="font-medium text-gray-900">{mockPostData.location}</p>
+            </div>
+
+            <hr className="my-8 border-gray-200" />
+
+            <section>
+              <p className="font-bold text-gray-800 mb-4">{comments.length}개의 댓글</p>
+              <div className="space-y-4">
+                {comments.map((comment) => (
+                  <div key={comment.id}>
+                    <p className="font-semibold text-sm text-gray-800">{comment.author}</p>
+                    <p className="text-gray-600 mt-1">{comment.text}</p>
+                  </div>
+                ))}
               </div>
-            ))}
+            </section>
+          </article>
+
+          <div className="px-6 sm:px-8 pb-8 pt-8">
+            <button
+              onClick={handleApplyClick}
+              className="w-full bg-black text-white font-bold py-3 px-4 rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition"
+            >
+              신청하기
+            </button>
           </div>
-        </section>
+        </div>
       </div>
-    </div>
+      
+      {/* 모달 렌더링 */}
+      {isModalOpen && <ApplicationModal post={mockPostData} onClose={() => setIsModalOpen(false)} onConfirm={handleConfirmApplication} />}
+    </>
   )
 }
 
