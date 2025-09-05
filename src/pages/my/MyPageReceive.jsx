@@ -1,40 +1,8 @@
-import React, { useState } from 'react';
-import ReceiveCard from '../../components/ReceiveCard';
 
-// TODO: 추후 API 연동을 통해 실제 데이터를 가져와야 합니다.
-const mockApiData = [
-  {
-    "title": "BHC 뿌링클 같이 시키실 분",
-    "content": "신촌역 5번 출구 앞에서 같이 받으실 분 구합니다. 배달비 n빵해요!",
-    "deadline": "2025-09-08T22:00:00Z",
-    "currentApplicants": 2,
-    "maxApplicants": 4,
-    "join_members": [
-      { "name": "김신촌", "call": "010-1111-2222", "content": "저는 뿌링클 콤보로 부탁드려요!" },
-      { "name": "이연세", "call": "010-3333-4444", "content": "치즈볼 추가 가능한가요?" },
-    ]
-  },
-  {
-    "title": "생수 공동구매",
-    "content": "쿠팡에서 삼다수 2L 12개 묶음 사실 분 계신가요? 로켓배송입니다.",
-    "deadline": "2025-09-13T23:59:59Z",
-    "currentApplicants": 8,
-    "maxApplicants": 10,
-    "join_members": [
-      { "name": "박이화", "call": "010-5555-6666", "content": "삼다수 2L 6개짜리 한 묶음이요." }
-    ]
-  },
-  {
-    "title": "A4용지 사실 분 구합니다",
-    "content": "학교 앞 알파문구에서 더블에이 500매짜리 5권 묶음으로 삽니다.",
-    "deadline": "2025-09-07T18:00:00Z",
-    "currentApplicants": 1,
-    "maxApplicants": 5,
-    "join_members": [
-      { "name": "최서강", "call": "010-7777-8888", "content": "더블에이 80g으로 1권만 부탁합니다." }
-    ]
-  }
-];
+import React, { useState, useEffect } from 'react';
+import ReceiveCard from '../../components/ReceiveCard';
+import { getReceivedRequests } from '../../apis/mypage'; // API 함수 import
+
 
 // D-day 계산을 위한 헬퍼 함수
 const dday = (deadline) => {
@@ -59,27 +27,53 @@ const DownArrowIcon = () => (
 );
 
 export default function MyPageReceive() {
-  // 각 그룹의 펼침/접힘 상태를 관리하는 state
-  const [expandedGroups, setExpandedGroups] = useState({}); // 기본적으로 모든 그룹을 닫힌 상태로 초기화합니다.
 
-  // 그룹의 펼침/접힘 상태를 토글하는 함수
-  const handleToggle = (title) => {
+  const [requests, setRequests] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [sortOrder, setSortOrder] = useState('enddate'); // 정렬 상태 관리
+  const [expandedGroups, setExpandedGroups] = useState({});
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const data = await getReceivedRequests(sortOrder);
+        setRequests(data);
+      } catch (err) {
+        setError(err.message || '요청 목록을 불러오는 데 실패했습니다.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [sortOrder]); // sortOrder가 변경될 때마다 데이터를 다시 불러옵니다.
+
+  const handleToggle = (id) => {
     setExpandedGroups(prevState => ({
       ...prevState,
-      [title]: !prevState[title]
+      [id]: !prevState[id],
     }));
   };
 
-  // deadline을 기준으로 데이터를 정렬합니다. (원본 배열 수정을 피하기 위해 복사본 사용)
-  const sortedData = [...mockApiData].sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
+  if (isLoading) {
+    return <div className="flex items-center justify-center min-h-screen">로딩 중...</div>;
+  }
+
+  if (error) {
+    return <div className="flex items-center justify-center min-h-screen text-red-500">에러: {error}</div>;
+  }
 
   return (
-    <div className="min-h-screen p-2">
+    <div className="min-h-screen p-6">
       <div className="max-w-md mx-auto">
-        {/* 헤더 */}
         <header className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-bold text-gray-500">총 {sortedData.length}개</h2>
+          <h2 className="text-lg font-bold text-gray-500">총 {requests.length}개</h2>
           <div className="relative">
+            {/* TODO: select 태그를 활용한 정렬 기능 구현 */}
+
             <button className="flex items-center py-2 space-x-2 text-sm font-medium text-gray-700 bg-white rounded-md">
               <span>마감임박순</span>
               <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
@@ -87,25 +81,28 @@ export default function MyPageReceive() {
           </div>
         </header>
 
-        {/* --- 그룹 목록 --- */}
+
         <div className="divide-y divide-gray-200">
-          {sortedData.map((group) => {
-            const progressPct = Math.min(100, Math.max(0, (group.currentApplicants / group.maxApplicants) * 100));
-            const isExpanded = expandedGroups[group.title];
+          {requests.map((group) => {
+            const progressPct = Math.min(100, Math.max(0, (group.join_member_count / group.max_participants) * 100));
+            const isExpanded = expandedGroups[group.id];
             
             return (
-              <section key={group.title} className="py-2">
-                {/* --- 그룹 헤더 (이제 클릭 가능) --- */}
-                <div onClick={() => handleToggle(group.title)} className="cursor-pointer">
+              <section key={group.id} className="py-6">
+                <div onClick={() => handleToggle(group.id)} className="cursor-pointer">
+
                   <div className="flex items-start justify-between">
                     <h3 className="pr-4 text-lg font-bold text-neutral-900">{group.title}</h3>
                     {isExpanded ? <UpArrowIcon /> : <DownArrowIcon />}
                   </div>
-                  <p className="mt-1 text-sm text-neutral-600 line-clamp-2">{group.content}</p>
+
+                  {/* API에 content 필드가 없으므로 임시 제거. 필요 시 추가 */}
+                  {/* <p className="mt-1 text-sm text-neutral-600 line-clamp-2">{group.content}</p> */}
                   <div className="mt-4">
                     <div className="flex items-center justify-between text-xs font-semibold text-neutral-600">
-                      <span>마감 {dday(group.deadline)}</span>
-                      <span>{group.currentApplicants}/{group.maxApplicants}명</span>
+                      <span>{dday(group.days_left)}</span>
+                      <span>{group.join_member_count}/{group.max_participants}명</span>
+
                     </div>
                     <div className="mt-1 h-2 rounded-full bg-neutral-200">
                       <div className="h-2 rounded-full bg-blue-600" style={{ width: `${progressPct}%` }} />
@@ -113,11 +110,16 @@ export default function MyPageReceive() {
                   </div>
                 </div>
 
-                {/* --- 참여자 카드 목록 (조건부 렌더링) --- */}
+
                 {isExpanded && (
                   <div className="mt-4 space-y-3">
-                    {group.join_members.map((member, index) => (
-                      <ReceiveCard key={index} member={member} />
+                    {group.joins.map((member) => (
+                      <ReceiveCard key={member.id} member={{
+                        name: member.name,
+                        call: member.phone_number,
+                        content: member.content
+                      }} />
+
                     ))}
                   </div>
                 )}
