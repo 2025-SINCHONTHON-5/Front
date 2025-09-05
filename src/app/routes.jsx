@@ -19,6 +19,7 @@ import MyPage from '../pages/my/MyPage'
 
 import NotificationsPage from '../pages/notifications/NotificationsPage'
 
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -51,3 +52,4 @@ const router = createBrowserRouter([
 ])
 
 export default router
+
