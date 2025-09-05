@@ -1,77 +1,70 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import PostCard from '../../components/PostCard.jsx'; 
-
-
-// --- Mock Data (해드려요 게시글용) ---
-const mockOffers = [
-  {
-    id: 1,
-    title: '떡볶이 공동구매 하실 분!',
-    content: '학교 앞에서 파는 인생 떡볶이, 다들 아시죠? 혼자 먹기에는 양이 많아서 공동구매 하실 분들을 찾습니다. 매운맛, 보통맛 선택 가능하니...',
-    deadline: '2025-09-10T20:00:00',
-    currentApplicants: 3,
-    maxApplicants: 5,
-    images: [
-      'https://placehold.co/600x400/F3E8FF/4F46E5?text=떡볶이+1',
-      'https://placehold.co/600x400/E0F2FE/0891B2?text=떡볶이+2',
-      'https://placehold.co/600x400/FEF3C7/F59E0B?text=떡볶이+3',
-    ],
-    author: '친절한 라이언',
-    createdAt: '2025-09-05T11:30:00',
-    commentCount: 12,
-  },
-  {
-    id: 2,
-    title: '배달비 N빵 하실 분 구합니다 (치킨)',
-    content: '오늘 저녁 BHC 치킨 시켜 드실 분 계신가요? 배달비가 너무 비싸서 같이 시키실 분 구합니다. 정문에서 같이 받으면 될 것 같아요!',
-    deadline: '2025-09-07T18:00:00',
-    currentApplicants: 1,
-    maxApplicants: 4,
-    images: [
-      'https://placehold.co/600x400/D1FAE5/065F46?text=치킨+이미지',
-    ],
-    author: '배고픈 어피치',
-    createdAt: '2025-09-06T19:00:00',
-    commentCount: 5,
-  },
-];
-// --- End of Mock Data ---
-
-
-const PencilIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z" />
-    </svg>
-);
-
+import { getJoinedRequests } from '../../apis/mypage.js';
 
 // 메인 페이지 컴포넌트
 export default function MyPageRequest() {
-  return (
-    <div className="bg-white min-h-screen font-sans p-4 sm:p-6">
-        <div className="max-w-xl mx-auto">
-            {/* 헤더 */}
-            <header className="flex justify-between items-center mb-6">
-                <h2 className="text-lg font-bold text-gray-500">총 {mockOffers.length}개</h2>
-                <div className="relative">
-                    <button className="flex items-center space-x-2 text-sm font-medium text-gray-700 bg-white px-4 py-2">
-                        <span>최신순</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                    </button>
-                </div>
-            </header>
+  const [requests, setRequests] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [sortOrder, setSortOrder] = useState('newest'); // 정렬 상태 관리
 
-            {/* 카드 목록 */}
-            <main className="border-t border-gray-200">
-                {mockOffers.map(offer => (
-                    <div key={offer.id} className="border-b border-gray-200">
-                        <PostCard post={offer} type="offer" />
-                    </div>
-                ))}
-            </main>
-        </div>
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const data = await getJoinedRequests(sortOrder);
+        setRequests(data);
+      } catch (err) {
+        setError(err.message || '요청 목록을 불러오는 데 실패했습니다.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [sortOrder]); // sortOrder가 변경될 때마다 데이터를 다시 불러옵니다.
+
+  if (isLoading) {
+    return <div className="flex items-center justify-center min-h-screen">로딩 중...</div>;
+  }
+
+  if (error) {
+    return <div className="flex items-center justify-center min-h-screen text-red-500">에러: {error}</div>;
+  }
+
+  return (
+    <div className="min-h-screen p-4 bg-white font-sans sm:p-6">
+      <div className="max-w-xl mx-auto">
+        {/* 헤더 */}
+        <header className="flex items-center justify-between mb-6">
+          <h2 className="text-lg font-bold text-gray-500">총 {requests.length}개</h2>
+          <div className="relative">
+            {/* TODO: select 태그 등을 활용하여 sortOrder state를 변경하는 기능 구현 */}
+            <button className="flex items-center py-2 space-x-2 text-sm font-medium text-gray-700 bg-white rounded-md">
+              <span>최신순</span>
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+            </button>
+          </div>
+        </header>
+
+        {/* 카드 목록 */}
+        <main className="border-t border-gray-200">
+          {requests.length > 0 ? (
+            requests.map(request => (
+              <div key={request.id} className="border-b border-gray-200">
+                {/* API 응답에 따라 post prop의 값을 매칭해야 합니다. */}
+                <PostCard post={request} type="offer" />
+              </div>
+            ))
+          ) : (
+            <div className="py-20 text-center text-gray-500">
+              <p>신청한 요청이 없습니다.</p>
+            </div>
+          )}
+        </main>
+      </div>
     </div>
   );
 }
-
