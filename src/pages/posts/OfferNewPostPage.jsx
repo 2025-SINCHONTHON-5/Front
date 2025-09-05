@@ -1,6 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from '../../apis/axios';
+
 
 export default function OfferNewPostPage() {
     const navigate = useNavigate();
@@ -34,6 +36,8 @@ export default function OfferNewPostPage() {
         }
     }, [location.state]);
 
+    const navigate = useNavigate()
+
     // 입력 변경 핸들러
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -48,6 +52,7 @@ export default function OfferNewPostPage() {
     // 폼 제출 핸들러 (author 필드 제거됨)
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         setError(null);
 
         // API 요청 본문에 더 이상 author를 포함하지 않습니다.
@@ -101,6 +106,7 @@ export default function OfferNewPostPage() {
                 setError("게시글 등록에 실패했습니다. 네트워크 연결을 확인해주세요.");
             }
         }
+
     };
 
     const inputStyle = "w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition";

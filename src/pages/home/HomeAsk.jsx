@@ -1,6 +1,3 @@
-import React from 'react';
-import PostCard from '../../components/PostCard.jsx';
-import { Link } from 'react-router-dom';
 
 // --- Mock Data (해주세요 게시글용) ---
 const mockAsks = [
@@ -38,48 +35,111 @@ const mockAsks = [
 ];
 // --- End of Mock Data ---
 
+
 const PencilIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z" />
-    </svg>
-);
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z" />
 
+  </svg>
+)
 
-// 메인 페이지 컴포넌트
 export default function HomeAsk() {
+  const [items, setItems] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [orderKey, setOrderKey] = useState('latest') // latest | oldest | mostComment
+
+  const ordering = useMemo(() => ORDER_MAP[orderKey], [orderKey])
+
+  useEffect(() => {
+    let alive = true
+    ;(async () => {
+      setLoading(true)
+      setError('')
+      try {
+        const data = await fetchAskList(ordering)
+        // 백엔드 스키마를 PostCard가 쓰는 필드로 매핑
+        const mapped = (data || []).map((d) => ({
+          id: d.id,
+          title: d.title,
+          content: d.content,
+          // 서버가 photo 하나만 주는 명세 → 3장 슬라이더용으로 같은 사진 반복
+          photo: d.photo ? toAbsolute(d.photo) : null,
+          images: d.photo ? [toAbsolute(d.photo)] : [],
+          author: d.requester?.email || d.requester?.id || '익명',
+          createdAt: d.created_at,
+          commentCount: d.comment_count ?? 0,
+        }))
+        if (alive) setItems(mapped)
+      } catch (e) {
+        console.error(e)
+        if (alive) setError('목록을 불러오지 못했어요.')
+      } finally {
+        if (alive) setLoading(false)
+      }
+    })()
+    return () => {
+      alive = false
+    }
+  }, [ordering])
+
   return (
     <div className="bg-white min-h-screen font-sans p-4 sm:p-6">
-        <div className="max-w-xl mx-auto">
-            {/* 헤더 */}
-            <header className="flex justify-between items-center mb-6">
-                <h2 className="text-lg font-bold text-gray-500">총 {mockAsks.length}개</h2>
-                <div className="relative">
-                    <button className="flex items-center space-x-2 text-sm font-medium text-gray-700 bg-white px-4 py-2">
-                        <span>최신순</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                    </button>
-                </div>
-            </header>
+      <div className="mx-auto max-w-xl">
 
-            {/* 카드 목록 */}
-            <main className="border-t border-gray-200">
-                {mockAsks.map(ask => (
-                    <div key={ask.id} className="border-b border-gray-200">
-                        {/* PostCard를 재사용하되, type을 'ask'로 전달합니다. */}
-                        <PostCard post={ask} type="ask" />
-                    </div>
-                ))}
-            </main>
+        {/* 헤더 */}
+        <header className="mb-6 flex items-center justify-between">
+          <h2 className="text-lg font-bold text-gray-500">
+            총 {loading ? '-' : items.length}개
+          </h2>
 
-            <Link 
-            to="/ask/posts/new" // AskNewPostPage 경로
-            className="fixed bottom-20 left-6 bg-gray-100 text-black p-4 rounded-full shadow-lg flex items-center justify-center hover:bg-indigo-700 transition-transform transform hover:scale-110"
-            aria-label="해주세요 새 글 작성"
+          {/* 정렬 선택 */}
+          <div className="relative">
+            <select
+              className="rounded border border-gray-300 bg-white px-3 py-2 text-sm"
+              value={orderKey}
+              onChange={(e) => setOrderKey(e.target.value)}
+              aria-label="정렬"
+            >
+              <option value="latest">최신순</option>
+              <option value="oldest">오래된순</option>
+              <option value="mostComment">댓글 많은 순</option>
+            </select>
+          </div>
+        </header>
+
+        {/* 목록 */}
+        <main>
+          {loading && <p className="py-6 text-sm text-gray-500">불러오는 중…</p>}
+          {error && <p className="py-6 text-sm text-red-500">{error}</p>}
+          {!loading && !error && items.length === 0 && (
+            <p className="py-6 text-sm text-gray-500">게시글이 없어요.</p>
+          )}
+
+          {!loading &&
+            !error &&
+            items.map((ask, idx) => (
+              <PostCard
+                key={ask.id}
+                post={ask}
+                type="ask"
+                showDivider={idx !== items.length - 1}
+              />
+            ))}
+        </main>
+
+        {/* 새 글 작성 버튼 */}
+        <Link
+          to="/ask/posts/new"
+          className="fixed bottom-20 right-6 flex h-12 w-12 items-center justify-center rounded-full bg-gray-900 text-white shadow-lg transition-transform hover:scale-105"
+
+          aria-label="해주세요 새 글 작성"
         >
-            <PencilIcon />
+          <PencilIcon />
         </Link>
-        </div>
-    </div>
-  );
-}
 
+        </div>
+
+    </div>
+  )
+}
