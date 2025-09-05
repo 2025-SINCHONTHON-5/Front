@@ -74,18 +74,9 @@ button:focus-visible {
 @theme {
   --color-primary: #1d4ed8;
   --color-primary-light: #4f9cf9;
-  --color-primary-dark: #1e3a8a;
+
   --color-secondary: #f59e0b;
   --font-sans: Inter, system-ui, sans-serif;
 }
 
-/* (선택) 다크 테마 토글 예시 */
-:root[data-theme='dark'] {
-  --color-bg: black;
-  --color-text: white;
-}
-:root {
-  --color-bg: white;
-  --color-text: black;
-}
 
