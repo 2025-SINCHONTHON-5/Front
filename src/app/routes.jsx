@@ -18,6 +18,8 @@ import AskNewPostPage from '../pages/posts/AskNewPostPage'
 import AskPostDetailPage from '../pages/posts/AskPostDetailPage'
 
 import MyPage from '../pages/my/MyPage'
+import MyPageRequest from '../pages/my/MyPageRequest'
+import MyPageReceive from '../pages/my/MyPageReceive'
 
 import NotificationsPage from '../pages/notifications/NotificationsPage'
 
@@ -43,14 +45,20 @@ const router = createBrowserRouter([
       { path: 'ask/posts/new', element: <AskNewPostPage /> },
       { path: 'ask/posts/:id', element: <AskPostDetailPage /> },
 
-      // 기타
+      // 로그인
       { path: 'logindetail', element: <LoginDetailPage /> },
       { path: 'login', element: <LoginPage /> },
+
+      // 마이 페이지 : 마이 페이지 / 내가 신청한 요청 관리 / 내가 받은 요청 관리
       { path: 'my', element: <MyPage /> },
+      { path: 'my/requests', element: <MyPageRequest /> },
+      { path: 'my/receives', element: <MyPageReceive /> },
+
+      // 기타
       { path: 'notifications', element: <NotificationsPage /> },
 
-      // 잘못된 경로는 /offer로
-      { path: '*', element: <Navigate to="/offer" replace /> },
+      // // 잘못된 경로는 /offer로
+      // { path: '*', element: <Navigate to="/offer" replace /> },
 
     ],
   },

@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import sinchonthonLogo from '../../assets/sinchonthonLogo.png';
 
 const LoginPage = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const goToLoginDetail = () => {
     navigate('/logindetail');
