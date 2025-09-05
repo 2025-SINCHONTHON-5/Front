@@ -1,55 +1,74 @@
-// src/app/routes.jsx
-import { createBrowserRouter, Navigate } from 'react-router-dom'
-import Layout from './Layout'
+import { Outlet, NavLink, useMatches, useNavigate } from 'react-router-dom'
 
-import LoginPage from '../pages/login/LoginPage'
-import LoginDetailPage from '../pages/login/LoginDetailPage'
+export default function Layout() {
+  const matches = useMatches()
+  const nav = useNavigate()
 
-// 리스트 페이지
-import HomeAsk from '../pages/home/HomeAsk'        // /ask
-import HomeOffer from '../pages/home/HomeOffer'    // /offer
+  // 가장 깊은 라우트에서 handle.title 읽기
+  const current = [...matches].reverse().find((m) => m.handle?.title)
+  const title = current?.handle?.title ?? ''
 
-// 해드려요(offer) 전용: 새 글 / 상세
-import OfferNewPostPage from '../pages/posts/OfferNewPostPage'
-import OfferPostDetailPage from '../pages/posts/OfferPostDetailPage'
+  return (
+    <div className="min-h-screen bg-white text-neutral-900">
+      {/* Header */}
+      <header className="sticky top-0 z-10 bg-white border-b">
+        <div className="mx-auto flex h-12 max-w-md items-center px-3">
+          {/* 뒤로가기 버튼 */}
+          <button
+            onClick={() => nav(-1)}
+            className="w-8 text-left text-[18px] leading-none text-neutral-700 hover:opacity-80"
+            aria-label="뒤로가기"
+          >
+            ←
+          </button>
 
-// 해주세요(ask) 전용: 새 글 / 상세
-import AskNewPostPage from '../pages/posts/AskNewPostPage'
-import AskPostDetailPage from '../pages/posts/AskPostDetailPage'
+          {/* 가운데 제목 */}
+          <div className="flex-1 text-center">
+            <h1 className="text-[15px] font-semibold">{title}</h1>
+          </div>
 
-import MyPage from '../pages/my/MyPage'
-import NotificationsPage from '../pages/notifications/NotificationsPage'
+          {/* 오른쪽 여백 */}
+          <div className="w-8" />
+        </div>
+      </header>
 
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Layout />,
-    children: [
-      // 첫 화면 → /offer
-      { index: true, element: <Navigate to="/offer" replace /> },
+      {/* Main Content (탭바 높이만큼 padding-bottom) */}
+      <main className="mx-auto max-w-md px-3 pt-3 pb-16">
+        <Outlet />
+      </main>
 
-      // 목록
-      { path: 'offer', element: <HomeOffer />, handle: { title: '해드려요' } },
-      { path: 'ask', element: <HomeAsk />, handle: { title: '해주세요' } },
+      {/* Bottom Tab Bar */}
+      <nav
+        className="fixed inset-x-0 bottom-0 z-50 border-t bg-white sm:hidden"
+        aria-label="하단 탭 내비게이션"
+      >
+        <ul className="mx-auto flex max-w-md">
+          <TabItem to="/offer" label="해드려요" />
+          <TabItem to="/ask" label="해주세요" />
+          <TabItem to="/notifications" label="알림" />
+          <TabItem to="/my" label="마이페이지" />
+        </ul>
+      </nav>
+    </div>
+  )
+}
 
-      // 해드려요: 새 글 / 상세
-      { path: 'offer/posts/new', element: <OfferNewPostPage />, handle: { title: '해드려요 등록' } },
-      { path: 'offer/posts/:id', element: <OfferPostDetailPage />, handle: { title: '해드려요 상세' } },
+/* 개별 탭 아이템 */
+function TabItem({ to, label }) {
+  const base =
+    'flex flex-col items-center justify-center gap-1 text-[11px] flex-1 py-2'
+  const idle = 'text-neutral-400'
+  const active = 'text-neutral-900 font-medium'
 
-      // 해주세요: 새 글 / 상세
-      { path: 'ask/posts/new', element: <AskNewPostPage />, handle: { title: '해주세요 등록' } },
-      { path: 'ask/posts/:id', element: <AskPostDetailPage />, handle: { title: '해주세요 상세' } },
-
-      // 기타
-      { path: 'login', element: <LoginPage />, handle: { title: '로그인' } },
-      { path: 'logindetail', element: <LoginDetailPage />, handle: { title: '로그인' } },
-      { path: 'my', element: <MyPage />, handle: { title: '마이페이지' } },
-      { path: 'notifications', element: <NotificationsPage />, handle: { title: '알림' } },
-
-      // 잘못된 경로 → /offer
-      { path: '*', element: <Navigate to="/offer" replace /> },
-    ],
-  },
-])
-
-export default router
+  return (
+    <li className="flex-1">
+      <NavLink to={to} className={({ isActive }) => `${base} ${isActive ? active : idle}`}>
+        {/* 간단한 X 박스 아이콘 */}
+        <div className="w-5 h-5 grid place-items-center rounded border border-neutral-300 text-neutral-400">
+          ×
+        </div>
+        <span className="whitespace-nowrap">{label}</span>
+      </NavLink>
+    </li>
+  )
+}
