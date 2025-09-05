@@ -1,15 +1,40 @@
 
-import React, { useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
-import PostCard from '../../components/PostCard.jsx'
-import { fetchAskList } from '../../apis/requests'
-import { toAbsolute } from '../../lib/url'
+// --- Mock Data (해주세요 게시글용) ---
+const mockAsks = [
+    {
+        id: 1,
+        title: '정문 앞에서 파는 붕어빵 좀 사다주세요!',
+        content: '수업 때문에 나갈 수가 없는데 붕어빵이 너무 먹고 싶어요... 카드 결제도 가능하다고 하니, 혹시 지나가시는 분 계시면 팥붕 3개...',
+        images: [
+            'https://placehold.co/600x400/E0F2FE/0891B2?text=붕어빵+사진',
+        ],
+        author: '도움이 필요한 네오',
+        createdAt: '2025-09-06T14:30:00',
+        commentCount: 8,
+    },
+    {
+        id: 2,
+        title: '노트북 충전기 빌려주실 분 ㅠㅠ',
+        content: '중앙도서관에서 공부하고 있는데 노트북 충전기를 안 가져왔어요. C타입 충전기 잠시만 빌려주실 천사분 계신가요? ㅠㅠ 바로 돌려드릴게요!',
+        images: [
+             'https://placehold.co/600x400/F3F4F6/4B5563?text=노트북+충전기',
+        ],
+        author: '급한 컴공생',
+        createdAt: '2025-09-06T11:00:00',
+        commentCount: 3,
+    },
+    {
+        id: 3,
+        title: '혹시 남는 A4 용지 있으신 분',
+        content: '과제 제출해야 하는데 A4 용지가 딱 한 장 모자라네요... 혹시 한 장만 주실 수 있는 분 계신가요?',
+        images: [], // 이미지가 없는 경우
+        author: '종이 없는 튜브',
+        createdAt: '2025-09-05T16:45:00',
+        commentCount: 5,
+    }
+];
+// --- End of Mock Data ---
 
-const ORDER_MAP = {
-  latest: '-created_at',     // 최신순(기본)
-  oldest: 'created_at',      // 오래된순
-  mostComment: '-comment_count', // 댓글 많은 순
-}
 
 const PencilIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -112,7 +137,9 @@ export default function HomeAsk() {
         >
           <PencilIcon />
         </Link>
-      </div>
+
+        </div>
+
     </div>
   )
 }

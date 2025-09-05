@@ -35,7 +35,10 @@ const mockOffers = [
     createdAt: '2025-09-06T19:00:00',
     commentCount: 5,
   },
-]
+
+];
+// --- End of Mock Data ---
+
 
 const PencilIcon = () => (
   <svg
@@ -84,40 +87,15 @@ export default function HomeOffer() {
               post={offer}
               type="offer"
 
-              showDivider={idx !== items.length - 1}
+            <Link 
+                        to="/offer/posts/new" // AskNewPostPage 경로
+                        className="fixed bottom-20 left-6 bg-gray-100 text-black p-4 rounded-full shadow-lg flex items-center justify-center hover:bg-indigo-700 transition-transform transform hover:scale-110"
+                        aria-label="해드려요 새 글 작성"
+                    >
+                        <PencilIcon />
+                    </Link>
+        </div>
 
-            />
-          ))}
-        </main>
-
-        {/* (옵션) 페이징 버튼 - 간단 예시 */}
-        {/* <div className="mt-6 flex justify-center gap-3">
-          <button
-            className="rounded border px-3 py-1 text-sm disabled:opacity-40"
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-            disabled={page === 1}
-          >
-            이전
-          </button>
-          <span className="text-sm text-gray-600">{page} 페이지</span>
-          <button
-            className="rounded border px-3 py-1 text-sm"
-            onClick={() => setPage((p) => p + 1)}
-          >
-            다음
-          </button>
-        </div> */}
-
-        {/* 새 글 버튼 */}
-        <Link
-          to="/offer/posts/new"
-          className="fixed bottom-20 right-6 flex items-center justify-center rounded-full bg-gray-900 p-4 text-white shadow-lg transition-transform hover:scale-105"
-
-          aria-label="해드려요 새 글 작성"
-        >
-          <PencilIcon />
-        </Link>
-      </div>
     </div>
   )
 }
