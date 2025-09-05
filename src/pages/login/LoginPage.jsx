@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 // 로고 이미지 경로를 import 합니다.
 // public 폴더를 사용한다면 '/sinchonthonLogo.png' 와 같이 바로 사용해도 됩니다.
-import sinchonthonLogo from '../../assets/sinchonthonLogo.png';
+import sinchonthonLogo from '../../assets/sinchonthonLogoWhite.svg';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -14,7 +14,7 @@ const LoginPage = () => {
 
   return (
     // 전체 화면을 채우고 내용을 수직/수평 중앙 정렬합니다.
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-black">
       <div className="flex flex-col items-center">
         
         {/* 1. 200x200 사이즈 로고 */}
