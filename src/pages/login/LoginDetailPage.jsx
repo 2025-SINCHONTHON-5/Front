@@ -29,8 +29,8 @@ export default function LoginDetailPage() {
       localStorage.setItem('accessToken', data.access.token);
       localStorage.setItem('refreshToken', data.refresh.token);
 
-      // 로그인 성공 후 메인 페이지('/')로 이동합니다.
-      navigate('/');
+      // 로그인 성공 후 메인 페이지('/offer')로 이동합니다.
+      navigate('/offer');
 
     } catch (err) {
       // 로그인 실패 시
