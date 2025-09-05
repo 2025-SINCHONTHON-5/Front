@@ -1,27 +1,55 @@
-import { Outlet, Link, useLocation } from 'react-router-dom'
+// src/app/routes.jsx
+import { createBrowserRouter, Navigate } from 'react-router-dom'
+import Layout from './Layout'
 
-export default function Layout() {
-  const { pathname } = useLocation()
+import LoginPage from '../pages/login/LoginPage'
+import LoginDetailPage from '../pages/login/LoginDetailPage'
 
-  return (
-    <div className="min-h-screen bg-neutral-50 text-neutral-900">
-      <header className="sticky top-0 z-10 bg-white/90 backdrop-blur border-b">
-        <nav className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
-          <Link to="/" className="font-semibold">SINCHONTHON</Link>
-          <div className="flex items-center gap-3">
-            <Link to="/posts/new" className="text-sm hover:underline">글쓰기</Link>
-            <Link to="/my" className="text-sm hover:underline">마이</Link>
-            <Link to="/login" className="text-sm hover:underline">
-              {pathname.startsWith('/login') ? '로그인중' : '로그인'}
-            </Link>
-          </div>
-        </nav>
-      </header>
+// 리스트 페이지
+import HomeAsk from '../pages/home/HomeAsk'        // /ask
+import HomeOffer from '../pages/home/HomeOffer'    // /offer
 
-      <main className="mx-auto max-w-5xl px-4 py-6">
-        <Outlet />
-      </main>
+// 해드려요(offer) 전용: 새 글 / 상세
+import OfferNewPostPage from '../pages/posts/OfferNewPostPage'
+import OfferPostDetailPage from '../pages/posts/OfferPostDetailPage'
 
-    </div>
-  )
-}
+// 해주세요(ask) 전용: 새 글 / 상세
+import AskNewPostPage from '../pages/posts/AskNewPostPage'
+import AskPostDetailPage from '../pages/posts/AskPostDetailPage'
+
+import MyPage from '../pages/my/MyPage'
+import NotificationsPage from '../pages/notifications/NotificationsPage'
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Layout />,
+    children: [
+      // 첫 화면 → /offer
+      { index: true, element: <Navigate to="/offer" replace /> },
+
+      // 목록
+      { path: 'offer', element: <HomeOffer />, handle: { title: '해드려요' } },
+      { path: 'ask', element: <HomeAsk />, handle: { title: '해주세요' } },
+
+      // 해드려요: 새 글 / 상세
+      { path: 'offer/posts/new', element: <OfferNewPostPage />, handle: { title: '해드려요 등록' } },
+      { path: 'offer/posts/:id', element: <OfferPostDetailPage />, handle: { title: '해드려요 상세' } },
+
+      // 해주세요: 새 글 / 상세
+      { path: 'ask/posts/new', element: <AskNewPostPage />, handle: { title: '해주세요 등록' } },
+      { path: 'ask/posts/:id', element: <AskPostDetailPage />, handle: { title: '해주세요 상세' } },
+
+      // 기타
+      { path: 'login', element: <LoginPage />, handle: { title: '로그인' } },
+      { path: 'logindetail', element: <LoginDetailPage />, handle: { title: '로그인' } },
+      { path: 'my', element: <MyPage />, handle: { title: '마이페이지' } },
+      { path: 'notifications', element: <NotificationsPage />, handle: { title: '알림' } },
+
+      // 잘못된 경로 → /offer
+      { path: '*', element: <Navigate to="/offer" replace /> },
+    ],
+  },
+])
+
+export default router
