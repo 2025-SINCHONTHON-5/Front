@@ -73,9 +73,6 @@ button:focus-visible {
 @theme {
   --color-primary: #1d4ed8;
   --color-primary-light: #4f9cf9;
-
   --color-secondary: #f59e0b;
   --font-sans: Inter, system-ui, sans-serif;
 }
-
-
