@@ -18,6 +18,9 @@ import AskNewPostPage from '../pages/posts/AskNewPostPage'
 import AskPostDetailPage from '../pages/posts/AskPostDetailPage'
 
 import MyPage from '../pages/my/MyPage'
+import MyPageRequest from '../pages/my/MyPageRequest'
+import MyPageReceive from '../pages/my/MyPageReceive'
+
 import NotificationsPage from '../pages/notifications/NotificationsPage'
 
 const router = createBrowserRouter([
@@ -40,10 +43,18 @@ const router = createBrowserRouter([
       { path: 'ask/posts/new', element: <AskNewPostPage />, handle: { title: '해주세요 글쓰기' } },
       { path: 'ask/posts/:id', element: <AskPostDetailPage />, handle: { title: '해주세요 상세' } },
 
-      // 기타
+
+      // 로그인
       { path: 'login', element: <LoginPage />, handle: { title: '로그인' } },
       { path: 'logindetail', element: <LoginDetailPage />, handle: { title: '로그인' } },
-      { path: 'my', element: <MyPage />, handle: { title: '마이페이지' } },
+
+      // 마이 페이지 : 마이 페이지 / 내가 신청한 요청 관리 / 내가 받은 요청 관리
+      { path: 'my', element: <MyPage />, handle: { title: '마이페이지' }},
+      { path: 'my/requests', element: <MyPageRequest />, handle: { title: '내가 신청한 요청 현황' }},
+      { path: 'my/receives', element: <MyPageReceive />, handle: { title: '내가 받은 요청 관리' } },
+
+        
+      // 기타
       { path: 'notifications', element: <NotificationsPage />, handle: { title: '알림' } },
 
 
