@@ -37,8 +37,7 @@ export default function AskNewPostPage() {
     return (
         <div className="bg-white-100 min-h-screen font-sans p-4 flex justify-center items-center">
             <section className="w-full max-w-2xl bg-white rounded-2xl p-6 sm:p-8 space-y-6 text-left">
-                <h1 className="text-xl sm:text-2xl font-bold text-gray-800">해주세요 등록</h1>
-                
+                               
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {/* 제목 */}
                     <div>
@@ -59,12 +58,12 @@ export default function AskNewPostPage() {
                     {/* 사진 첨부 */}
                     <div>
                         <label htmlFor="file-upload" className={labelStyle}>사진</label>
-                        <p className={descriptionStyle}>필요한 물품이나 상황을 잘 보여주는 사진을 첨부해주세요.</p>
+                        <p className={descriptionStyle}>이미지 형식은  JPG/PNG, 용량은 5MB 이하만 가능합니다.</p>
                         <input id="file-upload" name="file-upload" type="file" onChange={handleFileChange} className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100"/>
                     </div>
                     
                     {/* 등록 버튼 */}
-                    <button type="submit" className="w-full bg-indigo-600 text-black font-bold py-3 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-transform transform hover:scale-102">
+                    <button type="submit" className="w-full bg-gray-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-transform transform hover:scale-102">
                         등록하기
                     </button>
                 </form>
