@@ -1,11 +1,3 @@
-<<<<<<< HEAD
-export default function LoginPage() {
-  return (
-    <p>로그인</p>
-
-  )
-}
-=======
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -73,4 +65,3 @@ const LoginPage = () => {
 
 export default LoginPage;
 
->>>>>>> 16b4e7ad4b6d9c47698f976f12224a9856dfc929

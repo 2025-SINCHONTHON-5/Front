@@ -22,9 +22,6 @@ export default function Layout() {
         <Outlet />
       </main>
 
-      <footer className="mx-auto max-w-5xl px-4 py-8 text-xs text-neutral-500">
-        © 2025 SINCHONTHON
-      </footer>
     </div>
   )
 }
