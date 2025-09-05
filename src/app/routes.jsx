@@ -46,6 +46,8 @@ const router = createBrowserRouter([
       { path: 'my', element: <MyPage />, handle: { title: '마이페이지' } },
       { path: 'notifications', element: <NotificationsPage />, handle: { title: '알림' } },
 
+
+
       // 잘못된 경로 → /offer
       { path: '*', element: <Navigate to="/offer" replace /> },
     ],
