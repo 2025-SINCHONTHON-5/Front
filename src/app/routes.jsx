@@ -55,14 +55,7 @@ const router = createBrowserRouter([
 
         
       // 기타
-<<<<<<< HEAD
-      { path: 'logindetail', element: <LoginDetailPage /> },
-      { path: 'login', element: <LoginPage /> },
-      { path: 'my', element: <MyPage /> },
-      { path: 'notifications', element: <NotificationsPage /> },
-=======
       { path: 'notifications', element: <NotificationsPage />, handle: { title: '알림' } },
->>>>>>> 668590f25423c48690ea5b11d24d9a1a0df50e8f
 
 
 
