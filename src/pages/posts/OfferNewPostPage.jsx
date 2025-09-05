@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'
 
 export default function OfferNewPostPage() {
     // 폼 입력 데이터 상태 관리
@@ -14,6 +15,8 @@ export default function OfferNewPostPage() {
         accountNumber: '',
         file: null,
     });
+
+    const navigate = useNavigate()
 
     // 입력 변경 핸들러
     const handleInputChange = (e) => {
@@ -32,6 +35,8 @@ export default function OfferNewPostPage() {
         // 실제 애플리케이션에서는 이 부분에서 API 호출 등을 통해 서버로 데이터를 전송합니다.
         console.log("제출된 데이터:", formData);
         alert('게시글이 성공적으로 등록되었습니다! (콘솔 로그 확인)');
+        // ✅ 등록 성공 후 /offer 로 이동
+        navigate('/offer')
     };
 
     // 입력 필드 스타일

@@ -13,7 +13,7 @@ export default function NotificationsPage() {
 
       <ul className="mt-4 space-y-4">
         {list.map(item => (
-          <li key={item.id} className="text-sm text-neutral-800">
+          <li key={item.id} className="text-sm text-neutral-800 border-b-gray-300">
             {item.text}
           </li>
         ))}
