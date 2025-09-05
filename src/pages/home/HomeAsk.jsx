@@ -2,6 +2,7 @@ import React from 'react';
 import PostCard from '../../components/PostCard.jsx';
 import { Link } from 'react-router-dom';
 
+
 // --- Mock Data (해주세요 게시글용) ---
 const mockAsks = [
     {
@@ -78,6 +79,7 @@ export default function HomeAsk() {
         >
             <PencilIcon />
         </Link>
+
         </div>
     </div>
   );
