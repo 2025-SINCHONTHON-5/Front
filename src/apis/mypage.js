@@ -15,6 +15,7 @@ export const getUserProfile = async () => {
   });
   
   return response.data;
+
 };
 
 export const getReceivedRequests = async (order = 'enddate') => {
@@ -56,4 +57,5 @@ export const getJoinedRequests = async (order = 'newest') => {
   });
   
   return response.data;
+
 };

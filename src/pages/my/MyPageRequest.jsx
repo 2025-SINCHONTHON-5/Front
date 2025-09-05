@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import PostCard from '../../components/PostCard.jsx'; 
 import { getJoinedRequests } from '../../apis/mypage.js';
@@ -68,3 +69,4 @@ export default function MyPageRequest() {
     </div>
   );
 }
+

@@ -1,6 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
 import ReceiveCard from '../../components/ReceiveCard';
 import { getReceivedRequests } from '../../apis/mypage'; // API 함수 import
+
 
 // D-day 계산을 위한 헬퍼 함수
 const dday = (deadline) => {
@@ -25,6 +27,7 @@ const DownArrowIcon = () => (
 );
 
 export default function MyPageReceive() {
+
   const [requests, setRequests] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -70,12 +73,14 @@ export default function MyPageReceive() {
           <h2 className="text-lg font-bold text-gray-500">총 {requests.length}개</h2>
           <div className="relative">
             {/* TODO: select 태그를 활용한 정렬 기능 구현 */}
+
             <button className="flex items-center py-2 space-x-2 text-sm font-medium text-gray-700 bg-white rounded-md">
               <span>마감임박순</span>
               <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
             </button>
           </div>
         </header>
+
 
         <div className="divide-y divide-gray-200">
           {requests.map((group) => {
@@ -85,22 +90,26 @@ export default function MyPageReceive() {
             return (
               <section key={group.id} className="py-6">
                 <div onClick={() => handleToggle(group.id)} className="cursor-pointer">
+
                   <div className="flex items-start justify-between">
                     <h3 className="pr-4 text-lg font-bold text-neutral-900">{group.title}</h3>
                     {isExpanded ? <UpArrowIcon /> : <DownArrowIcon />}
                   </div>
+
                   {/* API에 content 필드가 없으므로 임시 제거. 필요 시 추가 */}
                   {/* <p className="mt-1 text-sm text-neutral-600 line-clamp-2">{group.content}</p> */}
                   <div className="mt-4">
                     <div className="flex items-center justify-between text-xs font-semibold text-neutral-600">
                       <span>{dday(group.days_left)}</span>
                       <span>{group.join_member_count}/{group.max_participants}명</span>
+
                     </div>
                     <div className="mt-1 h-2 rounded-full bg-neutral-200">
                       <div className="h-2 rounded-full bg-blue-600" style={{ width: `${progressPct}%` }} />
                     </div>
                   </div>
                 </div>
+
 
                 {isExpanded && (
                   <div className="mt-4 space-y-3">
@@ -110,6 +119,7 @@ export default function MyPageReceive() {
                         call: member.phone_number,
                         content: member.content
                       }} />
+
                     ))}
                   </div>
                 )}
