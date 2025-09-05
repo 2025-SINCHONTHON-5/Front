@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 
 // 로고 이미지 경로를 import 합니다.
 // public 폴더를 사용한다면 '/sinchonthonLogo.png' 와 같이 바로 사용해도 됩니다.
-import sinchonthonLogo from '../../assets/sinchonthonLogo.png';
+import sinchonthonLogo from '../../assets/sinchonthonLogoWhite.svg';
+import needitWhite from '../../assets/needitWhite.svg';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ const LoginPage = () => {
 
   return (
     // 전체 화면을 채우고 내용을 수직/수평 중앙 정렬합니다.
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-black">
       <div className="flex flex-col items-center">
         
         {/* 1. 200x200 사이즈 로고 */}
@@ -28,9 +29,9 @@ const LoginPage = () => {
         <div className="mb-4" /> 
 
         {/* 3. 서비스 이름과 슬로건 */}
-        <h2 className="text-4xl font-bold">서비스로고</h2>
-        <p className="mt-2 text-base text-gray-600">
-          서비스 슬로건
+        <img src={needitWhite} alt="서비스 이름" className="w-[180px] h-auto" />
+        <p className="mt-1 text-base text-white">
+          서로의 필요가 만나는 곳
         </p>
         
         {/* 4. 슬로건 아래 100px 패딩 (margin-bottom) */}
@@ -42,7 +43,7 @@ const LoginPage = () => {
           <button
             type="button"
             onClick={goToLoginDetail}
-            className="w-full px-4 py-3 font-semibold !text-white !bg-black rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
+            className="w-full px-4 py-3 font-semibold !text-black !bg-white rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
           >
             로그인
           </button>
@@ -53,7 +54,7 @@ const LoginPage = () => {
           {/* 7. 회원가입 버튼 */}
           <button
             type="button"
-            className="w-full px-4 py-3 font-semibold text-gray-700 bg-gray-200 rounded-lg shadow-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75"
+            className="w-full px-4 py-3 font-semibold text-white bg-black border border-white rounded-lg shadow-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75"
           >
             회원가입
           </button>

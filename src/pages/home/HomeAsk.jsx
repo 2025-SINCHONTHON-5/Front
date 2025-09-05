@@ -1,3 +1,4 @@
+
 import React, { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import PostCard from '../../components/PostCard.jsx'
@@ -13,6 +14,7 @@ const ORDER_MAP = {
 const PencilIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z" />
+
   </svg>
 )
 
@@ -59,6 +61,7 @@ export default function HomeAsk() {
   return (
     <div className="bg-white min-h-screen font-sans p-4 sm:p-6">
       <div className="mx-auto max-w-xl">
+
         {/* 헤더 */}
         <header className="mb-6 flex items-center justify-between">
           <h2 className="text-lg font-bold text-gray-500">
@@ -104,6 +107,7 @@ export default function HomeAsk() {
         <Link
           to="/ask/posts/new"
           className="fixed bottom-20 right-6 flex h-12 w-12 items-center justify-center rounded-full bg-gray-900 text-white shadow-lg transition-transform hover:scale-105"
+
           aria-label="해주세요 새 글 작성"
         >
           <PencilIcon />
