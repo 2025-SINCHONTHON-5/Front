@@ -1,6 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 // Chevron Right Icon Component
 const ChevronRightIcon = () => (
@@ -17,17 +16,16 @@ const ChevronRightIcon = () => (
 );
 
 export default function MyPage() {
-
   const navigate = useNavigate();
   
-  const goToReceive = () => {
+  const goToReceived = () => {
     navigate('/my/receives');
   };
 
-  const goToRequest = () => {
+  const goToApplied = () => {
     navigate('/my/requests');
   }
-  
+
   // TODO: 추후 API 연동을 통해 실제 사용자 데이터와 요청 개수를 가져와야 합니다.
   const userData = {
     name: '홍길동',
@@ -40,7 +38,7 @@ export default function MyPage() {
   };
 
   return (
-    <div className="min-h-screen p-6 bg-gray-50">
+    <div className="min-h-screen p-6">
       {/* ⭐ mx-auto를 추가하여 콘텐츠 블록을 중앙 정렬합니다. */}
       <div className="w-full max-w-md mx-auto text-left">
         {/* --- 사용자 정보 섹션 --- */}
@@ -63,24 +61,27 @@ export default function MyPage() {
         <section>
           <h2 className="text-xl font-bold">해드려요</h2>
 
-          <div className="mt-4 space-y-3">
+          <div className="mt-4 space-y-4"> {/* 간격을 조금 더 줍니다 */}
             {/* 내가 받은 요청 관리하기 */}
-            <div className="flex items-center justify-between w-full p-4 transition duration-150 bg-white rounded-lg shadow-sm hover:bg-gray-100"
+            <div
+              onClick={goToReceived}
+              className="flex items-center justify-between w-full py-2 transition duration-150 cursor-pointer hover:opacity-70"
             >
-              <span className="font-semibold text-gray-800">내가 받은 요청 관리하기</span>
+              <span className="font-semibold text-gray-500">내가 받은 요청 관리하기</span>
               <div className="flex items-center space-x-2">
-                <span className="font-bold text-blue-600" onClick={goToReceive}>{requestCounts.received}</span>
+                <span className="font-bold text-gray-500">{requestCounts.received}개</span>
                 <ChevronRightIcon />
               </div>
             </div>
 
             {/* 내가 신청한 요청 현황보기 */}
             <div
-              className="flex items-center justify-between w-full p-4 transition duration-150 bg-white rounded-lg shadow-sm hover:bg-gray-100"
+              onClick={goToApplied}
+              className="flex items-center justify-between w-full transition duration-150 cursor-pointer hover:opacity-70"
             >
-              <span className="font-semibold text-gray-800">내가 신청한 요청 현황보기</span>
+              <span className="font-semibold text-gray-500">내가 신청한 요청 현황보기</span>
               <div className="flex items-center space-x-2">
-                <span className="font-bold text-blue-600" onClick={goToRequest}>{requestCounts.applied}</span>
+                <span className="font-bold text-gray-500">{requestCounts.applied}개</span>
                 <ChevronRightIcon />
               </div>
             </div>
