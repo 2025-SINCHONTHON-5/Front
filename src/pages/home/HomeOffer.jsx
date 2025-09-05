@@ -1,3 +1,4 @@
+
 import React from 'react'
 import { Link } from 'react-router-dom'
 import PostCard from '../../components/PostCard.jsx'
@@ -77,19 +78,41 @@ export default function HomeOffer() {
         {/* 카드 리스트 */}
         <main>
           {mockOffers.map((offer, idx) => (
+
             <PostCard
               key={offer.id}
               post={offer}
               type="offer"
-              showDivider={idx !== mockOffers.length - 1}
+
+              showDivider={idx !== items.length - 1}
+
             />
           ))}
         </main>
 
+        {/* (옵션) 페이징 버튼 - 간단 예시 */}
+        {/* <div className="mt-6 flex justify-center gap-3">
+          <button
+            className="rounded border px-3 py-1 text-sm disabled:opacity-40"
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={page === 1}
+          >
+            이전
+          </button>
+          <span className="text-sm text-gray-600">{page} 페이지</span>
+          <button
+            className="rounded border px-3 py-1 text-sm"
+            onClick={() => setPage((p) => p + 1)}
+          >
+            다음
+          </button>
+        </div> */}
+
         {/* 새 글 버튼 */}
         <Link
           to="/offer/posts/new"
-          className="fixed bottom-20 left-6 flex items-center justify-center rounded-full bg-gray-100 p-4 text-black shadow-lg transition-transform hover:scale-110"
+          className="fixed bottom-20 right-6 flex items-center justify-center rounded-full bg-gray-900 p-4 text-white shadow-lg transition-transform hover:scale-105"
+
           aria-label="해드려요 새 글 작성"
         >
           <PencilIcon />
