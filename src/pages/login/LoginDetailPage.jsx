@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import sinchonthonLogo from '../../assets/sinchonthonLogo.png';
+import sinchonthonLogoBlack from '../../assets/sinchonthonLogoBlack.svg';
+import needitBlack from '../../assets/needitBlack.svg';
 import { login } from '../../apis/auth'; // auth.js에서 loginAPI 함수를 가져옵니다.
 
 export default function LoginDetailPage() {
@@ -53,13 +54,15 @@ export default function LoginDetailPage() {
     <div className="flex flex-col items-center justify-center min-h-screen px-4 bg-gray-50">
       <div className="flex flex-col items-center w-full max-w-xs">
         <img
-          src={sinchonthonLogo}
+          src={sinchonthonLogoBlack}
           alt="선착! 서비스 로고"
           className="w-[200px] h-[200px]"
         />
         <div className="mb-4" />
-        <h3 className="text-2xl font-bold">서비스 이름</h3>
-        <p className="mt-2 text-base text-gray-600">서비스 슬로건</p>
+        <img src={needitBlack} alt="서비스 이름" className="w-[180px] h-auto" />
+                <p className="mt-1 text-base text-black">
+                  서로의 필요가 만나는 곳
+                </p>
         <div className="mb-10" />
 
         <div className="w-full">
