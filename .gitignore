@@ -23,8 +23,18 @@ dist-ssr
 *.sln
 *.sw?
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 16b4e7ad4b6d9c47698f976f12224a9856dfc929
 # local env files
 .env.local
 .env.*.local
 
+<<<<<<< HEAD
 package-lock.json
+=======
+
+package-lock.json
+
+>>>>>>> 16b4e7ad4b6d9c47698f976f12224a9856dfc929
